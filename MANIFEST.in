@@ -1,0 +1,2 @@
+include versioneer.py
+include ronia/_version.py
