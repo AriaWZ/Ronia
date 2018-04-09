@@ -42,7 +42,8 @@ np.random.seed(42)
 
 
 # Define dummy data
-input_data = 10 * np.random.rand(30)
+n = 30
+input_data = 10 * np.random.rand(n)
 y = (
     5 * input_data +
     2.0 * input_data ** 2 +
@@ -51,8 +52,8 @@ y = (
 )
 ```
 
-The object `x` is a convenience tool for defining input data maps
-as if they were just Numpy arrays (or Pandas DataFrames).
+The object `x` is just a convenience tool for defining input data maps
+as if they were just Numpy arrays.
 
 ```python
 # Define model
@@ -173,9 +174,113 @@ fig = ronia.plot.gaussian1d_density_plot(model, grid_limits=[-1, 3])
 ![alt text](./doc/source/images/example1-0.png "Validation plot")
 ![alt text](./doc/source/images/example1-1.png "1-D density plot")
 
+
+### Multivariate Gaussian process regression
+
+In this example we construct a basis corresponding to a multi-variate
+Gaussian process with a Kronecker structure (see e.g. [PyMC3](https://docs.pymc.io/notebooks/GP-Kron.html)).
+
+Let us first create some artificial data using the MATLAB function!
+
+```python
+# Create some data
+n = 100
+input_data = np.vstack(
+    (
+        6 * np.random.rand(n) - 3,
+        6 * np.random.rand(n) - 3,
+    )
+).T
+
+def peaks(x, y):
+    """The function in Mathworks logo
+
+    """
+    return (
+        3 * (1 - x) ** 2 * np.exp(-(x ** 2) - (y + 1) ** 2) -
+        10 * (x / 5 - x ** 3 - y ** 5) * np.exp(-x ** 2 - y ** 2) -
+        1 / 3 * np.exp(-(x + 1) ** 2 - y ** 2)
+    )
+
+y = peaks(input_data[:, 0], input_data[:, 1]) + 4 + 0.3 * np.random.randn(n)
+```
+
+There is support for forming two-dimensional basis functions given two
+one-dimensional formulas. The new combined basis is essentially the outer
+product of the given bases. The underlying weight prior distribution priors and
+covariances are constructed using the Kronecker product.
+
+
+```python
+# Define model
+a = ronia.ExpSquared1d(
+    np.arange(-3, 3, 0.1),
+    l=0.5,
+    sigma=4.0,
+    energy=0.99
+)(x[:, 0])  # note that we need to define the input map at this point!
+b = ronia.ExpSquared1d(
+    np.arange(-3, 3, 0.1),
+    l=0.5,
+    sigma=4.0,
+    energy=0.99
+)(x[:, 1]) # note that we need to define the input map at this point!
+formula = ronia.kron(a, b)
+intercept = ronia.Scalar(prior=(0, 1e-6))
+formula = A + intercept
+model = ronia.BayesianGAM(formula).fit(input_data, y)
+```
+
+Note that same logic could be used to construct higher dimensional bases,
+that is, one could define
+
+```python
+# 3-D formula
+formula = ronia.kron(ronia.kron(a, b), c)
+```
+
+Finally, plot results.
+
+
+```python
+# Plot results
+fig = ronia.plot.validation_plot(
+    model,
+    input_data,
+    y,
+    grid_limits=[[-3, 3], [-3, 3]],
+    input_maps=[x, x[:, 0]],
+    titles=["A", "intercept"]
+)
+
+
+# Plot parameter probability density functions
+fig = ronia.plot.gaussian1d_density_plot(model, grid_limits=[-1, 3])
+```
+
+![alt text](./doc/source/images/example2-0.png "Validation plot")
+![alt text](./doc/source/images/example2-1.png "1-D density plot")
+
+The original function can be plotted like so
+
+```python
+from mpl_toolkits.mplot3d import Axes3D
+
+
+X, Y = np.meshgrid(np.linspace(-3, 3, 100), np.linspace(-3, 3, 100))
+Z = peaks(X, Y) + 4
+
+fig = plt.figure()
+ax = fig.gca(projection="3d")
+ax.plot_surface(X, Y, Z, color="r", antialiased=False)
+# ax.scatter3D(input_data[:, 0], input_data[:, 1], y)
+```
+
+![alt text](./doc/source/images/peaks.png "Peaks")
+
+
 ## To-be-added features
 
-- **TODO** Multivariate basis functions
-- **TODO** Multi-dimensional observations
 - **TODO** Hyperpriors for model parameters
+- **TODO** Multi-dimensional observations
 - **TODO** Dynamically changing models
