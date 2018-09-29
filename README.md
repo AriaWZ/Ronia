@@ -41,7 +41,7 @@ import pandas as pd
 
 import ronia
 from ronia.utils import pipe
-from ronia.arraymapper import x
+from ronia.keyfunction import x
 
 
 np.random.seed(42)
@@ -152,7 +152,7 @@ y = (
 # Define model
 a = ronia.ExpSineSquared1d(
     np.arange(0, 2 * np.pi, 0.1),
-    corrlen=1.0,
+    l=1.0,
     sigma=1.0,
     period=2 * np.pi,
     energy=0.99
@@ -221,13 +221,13 @@ covariances are constructed using the Kronecker product.
 # Define model
 a = ronia.ExpSquared1d(
     np.arange(-3, 3, 0.1),
-    corrlen=0.5,
+    l=0.5,
     sigma=4.0,
     energy=0.99
 )(x[:, 0])  # note that we need to define the input map at this point!
 b = ronia.ExpSquared1d(
     np.arange(-3, 3, 0.1),
-    corrlen=0.5,
+    l=0.5,
     sigma=4.0,
     energy=0.99
 )(x[:, 1]) # note that we need to define the input map at this point!
