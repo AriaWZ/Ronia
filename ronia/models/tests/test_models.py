@@ -61,7 +61,7 @@ assert_arrays_equal = utils.compose(
         lambda xs: (
             xs[0],
             xs[1],
-            ronia.BayesianGAM(formula=xs[2]).fit(
+            ronia.models.bayespy.GAM(formula=xs[2]).fit(
                 input_data=xs[0],
                 y=xs[1]
             )
@@ -72,9 +72,9 @@ assert_arrays_equal = utils.compose(
         lambda xs: (
             xs[0],
             xs[1],
-            ronia.LinearGAM(
+            ronia.models.numpy.GAM(
                 formula=xs[2],
-                tau=ronia.Delta(1998.50381764)
+                tau=ronia.models.numpy.Delta(1998.50381764)
             ).fit(
                 input_data=xs[0],
                 y=xs[1]
@@ -276,11 +276,11 @@ def test_gam(model_data):
     polynomial(), gp()
 ])
 def test_bayespy_mutable(data):
-    """Currently ``BayesianGAM`` object is mutated when fitted
+    """Currently ``ronia.models.bayespy.GAM`` object is mutated when fitted
 
     """
     (input_data, y, formula) = data
-    model_prefit = ronia.BayesianGAM(formula)
+    model_prefit = ronia.models.bayespy.GAM(formula)
     model_fitted = model_prefit.fit(input_data, y)
     assert_arrays_equal(
         model_prefit.mean_theta,  # This changes as a side-effect
@@ -305,8 +305,8 @@ def test_fit_unique(data):
 
     """
     (input_data, y, formula) = data
-    model_1 = ronia.BayesianGAM(formula).fit(input_data, y)
-    model_2 = ronia.BayesianGAM(formula).fit(input_data, y)
+    model_1 = ronia.models.bayespy.GAM(formula).fit(input_data, y)
+    model_2 = ronia.models.bayespy.GAM(formula).fit(input_data, y)
     assert_arrays_equal(
         model_1.mean_theta,
         model_2.mean_theta
@@ -337,11 +337,14 @@ def assert_nodes_equal(a, b):
 def test_numpy_serialize(tmpdir, filename, data):
     p = tmpdir.mkdir("test").join(filename)
     (input_data, y, formula) = data
-    model = ronia.LinearGAM(formula=formula, tau=ronia.Delta(666))
-    model.save(p.strpath)
-    loaded = ronia.LinearGAM(
+    model = ronia.models.numpy.GAM(
         formula=formula,
-        tau=ronia.Delta(42)
+        tau=ronia.models.numpy.Delta(666)
+    )
+    model.save(p.strpath)
+    loaded = ronia.models.numpy.GAM(
+        formula=formula,
+        tau=ronia.models.numpy.Delta(42)
     ).load(p.strpath)
     assert_almost_equal(model.theta.mu, loaded.theta.mu, decimal=8)
     assert_almost_equal(model.theta.Lambda, loaded.theta.Lambda, decimal=8)
@@ -358,9 +361,9 @@ def test_numpy_serialize(tmpdir, filename, data):
 def test_bayespy_serialize(tmpdir, filename, data):
     p = tmpdir.mkdir("test").join(filename)
     (input_data, y, formula) = data
-    model = ronia.BayesianGAM(formula).fit(input_data, y)
+    model = ronia.models.bayespy.GAM(formula).fit(input_data, y)
     model.save(p.strpath)
-    loaded = ronia.BayesianGAM(formula).load(p.strpath)
+    loaded = ronia.models.bayespy.GAM(formula).load(p.strpath)
     assert_nodes_equal(model.theta, loaded.theta)
     assert_nodes_equal(model.tau, loaded.tau)
     return

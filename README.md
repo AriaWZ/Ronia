@@ -97,7 +97,7 @@ a = ronia.Scalar(prior=(0, 1e-6))
 b = ronia.Scalar(prior=(0, 1e-6))
 bias = ronia.Scalar(prior=(0, 1e-6))
 formula = a * x + b * x ** 2 + bias
-model = ronia.BayesianGAM(formula).fit(input_data, y)
+model = ronia.models.bayespy.GAM(formula).fit(input_data, y)
 ```
 
 The model attribute `model.theta` characterizes the Gaussian posterior distribution of the model parameters vector.
@@ -158,7 +158,7 @@ model.save("/home/foobar/test.hdf5")
 Loading
 
 ```python
-model = BayesianGAM(formula).load("/home/foobar/test.hdf5")
+model = bayespy.GAM(formula).load("/home/foobar/test.hdf5")
 ```
 
 ### Gaussian process regression ("kriging")
@@ -183,7 +183,7 @@ a = ronia.ExpSineSquared1d(
 )
 bias = ronia.Scalar(prior=(0, 1e-6))
 formula = a(x[:, 0]) * x[:, 1] + bias
-model = ronia.BayesianGAM(formula).fit(input_data, y)
+model = ronia.models.bayespy.GAM(formula).fit(input_data, y)
 
 
 # Plot results
@@ -238,9 +238,9 @@ c = ronia.OrnsteinUhlenbeck1d(
     energy=0.99
 )(x)
 
-exponential_squared = ronia.BayesianGAM(a).fit(input_data, y)
-rational_quadratic = ronia.BayesianGAM(b).fit(input_data, y)
-ornstein_uhlenbeck = ronia.BayesianGAM(c).fit(input_data, y)
+exponential_squared = ronia.models.bayespy.GAM(a).fit(input_data, y)
+rational_quadratic = ronia.models.bayespy.GAM(b).fit(input_data, y)
+ornstein_uhlenbeck = ronia.models.bayespy.GAM(c).fit(input_data, y)
 # Plot boilerplate ...
 
 ```
@@ -332,7 +332,7 @@ b = ronia.ExpSquared1d(
 A = ronia.Kron(a, b)
 bias = ronia.Scalar(prior=(0, 1e-6))
 formula = A + bias
-model = ronia.BayesianGAM(formula).fit(input_data, y)
+model = ronia.models.bayespy.GAM(formula).fit(input_data, y)
 ```
 
 Note that same logic could be used to construct higher dimensional bases,
@@ -406,7 +406,7 @@ a = ronia.BSpline1d(
     extrapolate=True
 )
 formula = a(x)
-model = ronia.BayesianGAM(formula).fit(input_data, y)
+model = ronia.models.bayespy.GAM(formula).fit(input_data, y)
 
 # Plot results
 fig = ronia.plot.validation_plot(
