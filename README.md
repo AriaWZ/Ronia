@@ -73,7 +73,6 @@ import numpy as np
 import pandas as pd
 
 import ronia
-from ronia.utils import pipe
 
 # NOTE: Used repetitively in defining model terms!
 from ronia.arraymapper import x
@@ -143,7 +142,7 @@ model parameter.
 
 ```python
 # Plot parameter probability density functions
-fig = ronia.plot.gaussian1d_density_plot(model, grid_limits=[-1, 3])
+fig = ronia.plot.gaussian1d_density_plot(model)
 ```
 ![Marginal posterior densities of parameters](./doc/source/images/example0-1.png "Densities")
 
@@ -198,7 +197,7 @@ fig = ronia.plot.validation_plot(
 
 
 # Plot parameter probability density functions
-fig = ronia.plot.gaussian1d_density_plot(model, grid_limits=[-1, 3])
+fig = ronia.plot.gaussian1d_density_plot(model)
 ```
 
 ![Partial residuals](./doc/source/images/example1-0.png "Partial residuals")
@@ -358,7 +357,7 @@ fig = ronia.plot.validation_plot(
 
 
 # Plot parameter probability density functions
-fig = ronia.plot.gaussian1d_density_plot(model, grid_limits=[-1, 3])
+fig = ronia.plot.gaussian1d_density_plot(model)
 ```
 
 ![Partial residuals](./doc/source/images/example2-0.png "Partial residuals")
@@ -420,7 +419,7 @@ fig = ronia.plot.validation_plot(
 
 
 # Plot parameter probability density functions
-fig = ronia.plot.gaussian1d_density_plot(model, grid_limits=[-1, 3])
+fig = ronia.plot.gaussian1d_density_plot(model)
 ```
 
 ![Partial residuals](./doc/source/images/example3-0.png "Validation plot")
