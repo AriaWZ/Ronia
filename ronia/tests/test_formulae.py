@@ -17,7 +17,7 @@ from ronia.arraymapper import x
 # TODO: Multivariate with Kron
 def multinomial():
     return (
-        ronia.Scalar() * x[:, 0] * x[:, 1] + ronia.Scalar(),
+        ronia.Scalar((0, 1)) * x[:, 0] * x[:, 1] + ronia.Scalar((0, 1)),
         np.vstack(
             (
                 np.arange(0, 1.5, 0.5),
@@ -29,7 +29,7 @@ def multinomial():
 
 def scalar():
     return (
-        ronia.Scalar(),
+        ronia.Scalar((0, 1)),
         np.array([0., 1., 2.])
     )
 
