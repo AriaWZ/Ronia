@@ -14,13 +14,6 @@ from ronia.arraymapper import ArrayMapper
 from ronia.utils import listmap, rlift
 
 
-def design_matrix(input_data: np.ndarray, basis: List[Callable]):
-    """Assemble the design matrix for basis function regression
-
-    """
-    return np.hstack([f(input_data).reshape(-1, 1) for f in basis])
-
-
 class Formula:
     """Basis manipulation and design matrix creator
 
@@ -98,6 +91,11 @@ class Formula:
             prior=self.prior
         )
 
+    def design_matrix(self, input_data, i: int=None):
+        # If one term is asked for, give it. Otherwise use all terms.
+        fs = sum(self.terms, []) if i is None else self.terms[i:i+1]
+        return np.hstack([f(input_data) for f in fs])
+
 
 #
 # Operations between formulae
@@ -106,6 +104,8 @@ class Formula:
 
 def Flatten(formula, prior=None) -> Formula:
     """Flatten the terms of a given formula
+
+    Optionally override prior
 
     Parameters
     ----------
@@ -171,8 +171,9 @@ def Kron(a, b) -> Formula:
     #       corresponds to the product r.v. of independent r.v.'s.
     #       Check the formula of variance of product of independent r.v.'s.
 
-    # In the same order as in a Kronecker product
+    # TODO / FIXME: Don't flatten a and b.
     gen = (
+        # Careful! Must be same order as in a Kronecker product.
         (f, g) for f in sum(a.terms, []) for g in sum(b.terms, [])
     )
 
@@ -186,6 +187,9 @@ def Kron(a, b) -> Formula:
         terms=[basis],
         prior=(
             np.kron(a.prior[0], b.prior[0]),
+            # Although we kron-multiply precision matrices here (inverse
+            # of covariance), the order of inputs doesn't flip because
+            # (A ⊗ B) ^ -1 = (A ^ -1) ⊗ (B ^ -1)
             np.kron(a.prior[1], b.prior[1])
         )
     )
@@ -428,12 +432,13 @@ def Function(function: Callable, prior: Tuple[np.ndarray]) -> Formula:
     return Formula(terms=[basis], prior=prior)
 
 
-def Polynomial(order):
+def Polynomial(degree, prior=None):
 
     def monomial(p):
         return lambda t: t ** p
 
-    basis = [monomial(n) for n in range(order)]
+    basis = [monomial(n) for n in range(degree + 1)]
+    prior = (np.zeros(degree + 1), 1e-6 * np.identity(degree + 1))
     return Formula(terms=[basis], prior=prior)
 
 
@@ -533,7 +538,7 @@ def BSpline1d(
 
     # Default prior is white noise
     prior = (
-        (np.zeros(len(basis)), np.identity(len(basis)))
+        (np.zeros(len(basis)), 1e-6 * np.identity(len(basis)))
         if prior is None else prior
     )
     return Formula(
