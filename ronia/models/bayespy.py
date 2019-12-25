@@ -158,7 +158,7 @@ class GAM:
         ``initialize_from_prior()`` of BayesPy nodes.
 
         """
-        X = self.formula.design_matrix(input_data)
+        X = design_matrix(input_data, sum(self.formula.terms, []))
         F = bp.nodes.SumMultiply("i,i", self.theta, X)
         Y = bp.nodes.GaussianARD(F, self.tau)
         Y.observe(y)
