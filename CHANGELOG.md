@@ -1,6 +1,18 @@
 # Change Log
 
 
+## 0.4.2
+
+### Add
+- Covariance matrix visualization plot
+- Polynomial formula
+- Lift for `ronia.arraymapper.ArrayMapper`
+
+### Change
+- Design matrix builder function `design_matrix` to a method of `ronia.Formula`
+- Naming convention: "basis" -> "term"
+
+
 ## 0.4.1
 
 ### Fix
