@@ -400,7 +400,6 @@ covariance kernel functions.
 
    import ronia
    from ronia.arraymapper import x
-   from ronia.formulae import design_matrix
 
 
    def kernel(x1, x2):
@@ -434,8 +433,8 @@ covariance kernel functions.
    #
 
    ax = plt.figure().gca()
-   ax.plot(grid, sample(design_matrix(grid, sum(a.terms, []))), label="Custom")
-   ax.plot(grid, sample(design_matrix(grid, sum(b.terms, []))), label="Custom")
+   ax.plot(grid, sample(a.design_matrix(grid)), label="Custom")
+   ax.plot(grid, sample(b.design_matrix(grid)), label="Custom")
    ax.legend()
 
    plt.show()
