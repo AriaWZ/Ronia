@@ -294,10 +294,10 @@ The above Kronecker transformation generalizes to arbitrary dimension. The below
 
 
 
-A documentation of the package code together with more code examples and images:
 
 
-Links to various code examples:
+
+Links to some code examples:
 
 - [Polynomial regression](https://roniawz.github.io/ronia/walkthrough.html#polynomial-regression)
 - [Gaussian process inference](https://roniawz.github.io/ronia/walkthrough.html#one-dimensional-gaussian-process-models)
