@@ -1,12 +1,9 @@
 # Ronia – Generalized additive models in Python with a Bayesian twist
 
-A Generalized additive model is a predictive mathematical model defined
-as a sum of terms that are calibrated (fitted) with observation data. This
-package provides a hopefully pleasant interface for configuring and fitting
-such models. Bayesian interpretation of model parameters is promoted and minimalist set of features.
+![](/doc/resources/cover.png)
 
-
-## Summary
+A Generalized additive model is a predictive mathematical model defined as a sum
+of terms that are calibrated (fitted) with observation data. 
 
 Generalized additive models form a surprisingly general framework for building
 models for both production software and scientific research. This Python package
@@ -17,10 +14,9 @@ as B-splines, among others. Of course, very simple terms like lines and
 constants are also supported (these are just very simple basis functions).
 
 The uncertainty in the weight parameter distributions is modeled using Bayesian
-statistic with the help of the superb package
-[BayesPy](http://www.bayespy.org/index.html).
-
-The work is on an early stage, so many features are still missing.
+statistical analysis with the help of the superb package
+[BayesPy](http://www.bayespy.org/index.html). Alternatively, it is possible to
+fit models using just NumPy.
 
 
 ### Other projects with GAM functionalities
@@ -60,8 +56,10 @@ the top of file -->
 pip install ronia
 ```
 
+## Features through examples
 
-## Examples
+In this overview, we demonstrate the package's most important features through
+common usage examples. 
 
 ### Polynomial regression on 'roids
 
@@ -427,6 +425,20 @@ fig = ronia.plot.gaussian1d_density_plot(model)
 ![](https://raw.githubusercontent.com/roniawz/ronia/develop/doc/resources/example3-0.png)
 
 ![](https://raw.githubusercontent.com/roniawz/ronia/develop/doc/resources/example3-1.png)
+
+## Testing
+
+The package's unit tests can be ran with PyTest (`cd` to repository root):
+
+``` shell
+pytest -v
+```
+
+Running the tests in this documentation
+
+## Documentation
+
+
 
 
 ## ToDo
