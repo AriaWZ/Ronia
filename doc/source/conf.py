@@ -14,15 +14,17 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import ronia
 
 # -- Project information -----------------------------------------------------
 
-project = 'Ronia'
-copyright = '2021, RoniaWZ'
-author = 'RoniaWZ'
+project = ronia.__title__
+copyright = ronia.__copyright__
+author = ronia.__author__
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.5'
+release = ronia.__version__
+version = ronia.__version__
 
 
 # -- General configuration ---------------------------------------------------
